@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Pork Badge</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easytimer@1.1.1/dist/easytimer.min.js"></script>
     <!-- <script src="vendors.json"></script> -->
 </head>
 <body>
@@ -12,7 +13,7 @@
         <h1>{{ appTitle }} - total {{ vendors.length }} vendors</h1>
         <h3>Current time: {{ currentTime }}</h3>
         <ul>
-            <li v-for="vendor in vendors" :key="vendor.badge_code">
+            <li v-for="(vendor, index) in vendors" :key="index">
                 {{ vendor.market_name }}: {{ vendor.addr }} - (Badge {{ vendor.badge_code }})
             </li>
         </ul>
@@ -58,6 +59,36 @@
         let vendors = await response.json();
         app.refreshData(vendors);
     })();
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    var timerInstance = new Timer();
+    var slowArray = [];
+
+    for (let i = 0; i < 10000; i++) {
+        slowArray.push(getRandomInt(1000000));
+    }
+
+    timerInstance.start();
+    for (let i = 0; i  < 1000; i++) {
+        let selected = slowArray.find((item, index, array) => item == getRandomInt(1000000));
+    }
+    console.log('time: ' + timerInstance.getTimeValues().toString());
+    // timerInstance.reset();
+
+    // var fastDictionary = {};
+    // for (let i = 0; i < 100; i++) {
+    //     var index = getRandomInt(10000);
+    //     fastDictionary[index] = index;
+    // }
+
+    // timerInstance.start();
+    // for (let i = 0; i  < 10; i) {
+    //     let selected = fastDictionary[getRandomInt(10000)];
+    // }
+    // console.log(timer.getTimeValues().toString());
 
 </script>
 </body>
