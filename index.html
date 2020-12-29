@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pork Badge</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="vendors.json"></script>
+</head>
+<body>
+
+    <div id="app">
+        <h1>{{ appTitle }} - total {{ vendors.length }} vendors</h1>
+        <h3>Current time: {{ currentTime }}</h3>
+        <ul>
+            <li v-for="vendor in vendors" :key="vendor.badge">
+                {{ vendor.market_name }}: {{ vendor.addr }} - (Badge {{ vendor.badge }})
+            </li>
+        </ul>
+    </div>
+
+<script>
+
+    const app = new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                appTitle: 'Pork Tagging',
+                currentTime: new Date(),
+                vendors: vendorsFromGov
+            };
+        },
+        methods: {
+            updateTime: function() {
+                this.currentTime = new Date();
+                window.setTimeout(() => {
+                    this.updateTime();
+                }, 2000);
+            }
+        }
+    });
+
+    app.updateTime();
+
+</script>
+</body>
+</html>
