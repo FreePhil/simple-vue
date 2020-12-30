@@ -1,113 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Pork Badge</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
-<body>
-
+  </head>
+  <body>
     <div id="app">
-        <h1>{{ appTitle }} - total {{ vendors.length }} vendors</h1>
-        <h3>Current time: {{ currentTime }}</h3>
-        <list-of-vendors :vendors="vendors"></list-of-vendors>
-        <!-- <ul>
-            <li v-for="(vendor, index) in vendors" :key="index">
-                {{ vendor.market_name }}: {{ vendor.addr }} - (Badge {{ vendor.badge_code }})
-            </li>
-        </ul> -->
+      <h1>{{ appTitle }} - total {{ vendors.length }} vendors</h1>
+      <h3>Current time: {{ currentTime }}</h3>
+
+      <list-of-vendors :traders="vendors"></list-of-vendors>
     </div>
 
-<script>
-
-    let vendorsFromGov = [];
-
-    let vendorComponent = {
-        props: ['v'],
+    <script>
+      let vendorComponent = {
+        props: ["store"],
+        data: function () {
+          return {
+            retailer: this.store,
+          };
+        },
+        computed: {
+          vendorColor: function () {
+            let badge = "gray";
+            let letter = this.retailer.badge_code.charAt(0);
+            switch (letter) {
+              case "A":
+                badge = "green";
+                break;
+              case "B":
+                badge = "red";
+                break;
+              case "C":
+                badge = "orange";
+                break;
+              case "D":
+                badge = "navy";
+                break;
+            }
+            return badge;
+          },
+        },
         template: `
             <div>
-                <a style="background-color: red">廠商</a>
-                <a>{{ v.market_name }}</a>
+                <a style="color: teal">廠商(</a>
+                <a href="" :style="{color: vendorColor}">{{ store.market_name }}, {{ retailer.badge_code }}</a>
+                <a style="color: teal">)</a>
             </div>    
-        `
-    }
+        `,
+      };
 
-    let listOfVendorsComponent = {
+      let listOfVendorsComponent = {
         components: {
-            'vendor': vendorComponent
+          vendor: vendorComponent,
         },
-        props: ['vendors'],
+        props: ["traders"],
         template: `
             <ul>
-                <h3> Size of all the vendors: {{ vendors.length }}</h3>
-                <li v-for="(vendor, index) in vendors" :key="index">
-                    <vendor :v='vendor'></vendor>
+                <h3> Size of all the vendors: {{ traders.length }}</h3>
+                <li v-for="(vendor, index) in traders" :key="index">
+                    <vendor :store='vendor'></vendor>
                 </li>
             </ul>
-        `
-    };
+        `,
+      };
 
-    const app = new Vue({
-        el: '#app',
+      const app = new Vue({
+        el: "#app",
         components: {
-            'listOfVendors': listOfVendorsComponent
+          listOfVendors: listOfVendorsComponent,
         },
-        data: function() {
-            return {
-                appTitle: 'Pork Tagging',
-                currentTime: new Date(),
-                vendors: vendorsFromGov
-            };
+        data: function () {
+          return {
+            appTitle: "Pork Tagging",
+            currentTime: new Date(),
+            vendors: [],
+          };
         },
         methods: {
-            updateTime: function() {
-                this.currentTime = new Date();
-                window.setTimeout(() => {
-                    this.updateTime();
-                }, 2000);
-            },
-            refreshData: function(data) {
-                this.vendors = data;
-            }
-        }
-    });
+          updateTime: function () {
+            this.currentTime = new Date();
+            window.setTimeout(() => {
+              this.updateTime();
+            }, 2000);
+          },
+          refreshData: function (data) {
+            this.vendors = data;
+          },
+        },
+      });
 
-    app.updateTime();
+      app.updateTime();
 
-    (async() => {
-        let response = await fetch('http://127.0.0.1:8080/vendors.json');
+      (async () => {
+        let response = await fetch("http://127.0.0.1:8080/vendors.json");
         let vendors = await response.json();
         app.refreshData(vendors);
-        console.log('done');
-    })();
-
-    // function getRandomInt(max) {
-    //     return Math.floor(Math.random() * Math.floor(max));
-    // }
-
-    // var slowArray = [];
-    // for (let i = 0; i < 30000; i++) {
-    //     slowArray.push(getRandomInt(100000));
-    // }
-
-    // console.log('array search start time: ' + new Date());
-    // for (let i = 0; i  < 10000; i++) {
-    //     let selected = slowArray.find((item) => item == getRandomInt(100000));
-    // }
-    // console.log('array search finish time: ' + new Date());
-
-    // var fastDictionary = {};
-    // for (let i = 0; i < 30000; i++) {
-    //     var index = getRandomInt(100000);
-    //     fastDictionary[index] = index;
-    // }
-
-    // console.log('dictionary lookup start time: ' + new Date());
-    // for (let i = 0; i < 10000; i++) {
-    //     let selected = fastDictionary[getRandomInt(100000)];
-    // }
-    // console.log('dictionary lookup finish time: ' + new Date());
-
-</script>
-</body>
+        console.log("done");
+      })();
+    </script>
+  </body>
 </html>
