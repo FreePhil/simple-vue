@@ -10,18 +10,48 @@
     <div id="app">
         <h1>{{ appTitle }} - total {{ vendors.length }} vendors</h1>
         <h3>Current time: {{ currentTime }}</h3>
-        <ul>
+        <list-of-vendors :vendors="vendors"></list-of-vendors>
+        <!-- <ul>
             <li v-for="(vendor, index) in vendors" :key="index">
                 {{ vendor.market_name }}: {{ vendor.addr }} - (Badge {{ vendor.badge_code }})
             </li>
-        </ul>
+        </ul> -->
     </div>
 
 <script>
 
     let vendorsFromGov = [];
+
+    let vendorComponent = {
+        props: ['v'],
+        template: `
+            <div>
+                <a style="background-color: red">廠商</a>
+                <a>{{ v.market_name }}</a>
+            </div>    
+        `
+    }
+
+    let listOfVendorsComponent = {
+        components: {
+            'vendor': vendorComponent
+        },
+        props: ['vendors'],
+        template: `
+            <ul>
+                <h3> Size of all the vendors: {{ vendors.length }}</h3>
+                <li v-for="(vendor, index) in vendors" :key="index">
+                    <vendor :v='vendor'></vendor>
+                </li>
+            </ul>
+        `
+    };
+
     const app = new Vue({
         el: '#app',
+        components: {
+            'listOfVendors': listOfVendorsComponent
+        },
         data: function() {
             return {
                 appTitle: 'Pork Tagging',
@@ -51,32 +81,32 @@
         console.log('done');
     })();
 
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-    }
+    // function getRandomInt(max) {
+    //     return Math.floor(Math.random() * Math.floor(max));
+    // }
 
-    var slowArray = [];
-    for (let i = 0; i < 30000; i++) {
-        slowArray.push(getRandomInt(100000));
-    }
+    // var slowArray = [];
+    // for (let i = 0; i < 30000; i++) {
+    //     slowArray.push(getRandomInt(100000));
+    // }
 
-    console.log('array search start time: ' + new Date());
-    for (let i = 0; i  < 10000; i++) {
-        let selected = slowArray.find((item) => item == getRandomInt(100000));
-    }
-    console.log('array search finish time: ' + new Date());
+    // console.log('array search start time: ' + new Date());
+    // for (let i = 0; i  < 10000; i++) {
+    //     let selected = slowArray.find((item) => item == getRandomInt(100000));
+    // }
+    // console.log('array search finish time: ' + new Date());
 
-    var fastDictionary = {};
-    for (let i = 0; i < 30000; i++) {
-        var index = getRandomInt(100000);
-        fastDictionary[index] = index;
-    }
+    // var fastDictionary = {};
+    // for (let i = 0; i < 30000; i++) {
+    //     var index = getRandomInt(100000);
+    //     fastDictionary[index] = index;
+    // }
 
-    console.log('dictionary lookup start time: ' + new Date());
-    for (let i = 0; i < 10000; i++) {
-        let selected = fastDictionary[getRandomInt(100000)];
-    }
-    console.log('dictionary lookup finish time: ' + new Date());
+    // console.log('dictionary lookup start time: ' + new Date());
+    // for (let i = 0; i < 10000; i++) {
+    //     let selected = fastDictionary[getRandomInt(100000)];
+    // }
+    // console.log('dictionary lookup finish time: ' + new Date());
 
 </script>
 </body>
