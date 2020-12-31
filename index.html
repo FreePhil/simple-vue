@@ -4,13 +4,24 @@
     <meta charset="UTF-8" />
     <title>Pork Badge</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+      .list-of-vendors {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      }
+
+      .vendor {
+        display: grid;
+        grid-template-columns: 1;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
       <h1>{{ appTitle }} - total {{ vendors.length }} vendors</h1>
       <h3>Current time: {{ currentTime }}</h3>
 
-      <list-of-vendors :traders="vendors"></list-of-vendors>
+      <list-of-vendors class="list-of-vendors" :traders="vendors"></list-of-vendors>
     </div>
 
     <script>
@@ -22,31 +33,36 @@
           };
         },
         computed: {
-          vendorColor: function () {
-            let badge = "gray";
+          vendorSpec: function () {
+            let badge = {color: "gray", image: "https://media-cdn.tripadvisor.com/media/photo-s/16/d5/50/11/great-ny-style-deli-downtown.jpg"};
             let letter = this.retailer.badge_code.charAt(0);
             switch (letter) {
               case "A":
-                badge = "green";
+                badge = {color: "green", image: "https://content.fortune.com/wp-content/uploads/2020/02/Amazon-go-grocery-store-cashier-less-1.jpg?resize=750,500"};
                 break;
               case "B":
-                badge = "red";
+                badge = {color: "red", image: "https://www.intercard.org/images1/kioskautomaten_01.jpg"};
                 break;
               case "C":
-                badge = "orange";
+                badge = {color: "orange", image: "https://c8.alamy.com/comp/2A34M0K/tokyo-japan-may-2-2019-kfc-kentucky-fried-chicken-store-at-ueno-tokyo-this-brand-is-the-fast-food-chain-store-2A34M0K.jpg"};
                 break;
               case "D":
-                badge = "navy";
+                badge = {color: "navy", image: "https://images.squarespace-cdn.com/content/v1/56716777df40f3234ea587ab/1490010794993-K0OHTUB942W75IFX3LYH/ke17ZwdGBToddI8pDm48kF9SbTRhd6xa1eKeA5IKVtV7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1URBd31XCzwRt2qjDL3uX83x39uuZAXodDwqGoGVsO13rxXwewy4_owVCEaES5JN-qA/specialty+coffee+shop+gorila.sk+bratislava"};
                 break;
             }
             return badge;
           },
         },
         template: `
-            <div>
-                <a style="color: teal">廠商(</a>
-                <a href="" :style="{color: vendorColor}">{{ store.market_name }}, {{ retailer.badge_code }}</a>
-                <a style="color: teal">)</a>
+            <div class="vendor">
+                <header style="text-align: center">
+                  <a style="color: teal">廠商(</a>
+                  <a href="" :style="{color: vendorSpec.color}">{{ store.market_name }}, {{ retailer.badge_code }}</a>
+                  <a style="color: teal">)</a>
+                </header style="height: 100%">
+                <figure>
+                  <img :src="vendorSpec.image" style="border-radius: 5px;max-width: 100%">
+                </figure>  
             </div>    
         `,
       };
@@ -57,12 +73,11 @@
         },
         props: ["traders"],
         template: `
-            <ul>
-                <h3> Size of all the vendors: {{ traders.length }}</h3>
-                <li v-for="(vendor, index) in traders" :key="index">
-                    <vendor :store='vendor'></vendor>
-                </li>
-            </ul>
+          <main>
+            <template v-for="(vendor, index) in traders">
+                <vendor :store='vendor'></vendor>
+            </template>
+          </main>  
         `,
       };
 
