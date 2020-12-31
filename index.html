@@ -13,7 +13,14 @@
       .vendor {
         display: grid;
         grid-template-columns: 1;
+        grid-template-rows: 3;
       }
+
+      .bottom-footer {
+        height: 10px; 
+        margin-top: auto    
+      }
+
     </style>
   </head>
   <body>
@@ -63,6 +70,7 @@
                 <figure>
                   <img :src="vendorSpec.image" style="border-radius: 5px;max-width: 100%">
                 </figure>  
+                <footer class="bottom-footer" :style="{'background-color': vendorSpec.color}"></footer>
             </div>    
         `,
       };
